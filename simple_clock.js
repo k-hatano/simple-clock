@@ -2,6 +2,11 @@ var LIGHTORANGE = 'rgb(255,224,192)';
 var LIGHTGRAY = 'rgb(192,192,192)';
 var ORANGE = 'rgb(255,192,0)';
 var DARKGRAY = 'rgb(64,64,64)';
+var DEEPDARKGRAY = 'rgb(32,32,32)';
+var RED = 'rgb(255,0,0)';
+var BLUE = 'rgb(0,0,255)';
+
+var showSecondBar = false;
 
 onload = function() {
   heartbeat();
@@ -23,6 +28,11 @@ onresize = function() {
 
   drawClock();
 };
+
+function clockClicked() {
+  showSecondBar = !showSecondBar;
+  drawClock();
+}
 
 function drawClock() {
   var canvas = document.getElementById('main_clock');
@@ -85,6 +95,21 @@ function drawClock() {
     Math.cos(rad) * 0.8) * weight / 2 + tit);
   ctx.stroke();
 
+  if (showSecondBar) {
+    ctx.beginPath();
+    ctx.lineWidth = tit;
+    if (hour < 12) {
+      ctx.strokeStyle = LIGHTGRAY;
+    } else {
+      ctx.strokeStyle = LIGHTGRAY;
+    }
+    ctx.moveTo(xPadding + weight / 2, yPadding + weight / 2 + tit / 2);
+    rad = Math.PI * 2 * (second / 60);
+    ctx.lineTo(xPadding + (1 + Math.sin(rad) * 0.82) * weight / 2, yPadding + (1 -
+      Math.cos(rad) * 0.82) * weight / 2 + tit);
+    ctx.stroke();
+  }
+
   ctx.beginPath();
   ctx.fillStyle = LIGHTGRAY;
   rad = Math.PI * 2 * (i / 12);
@@ -96,7 +121,7 @@ function drawClock() {
   ctx.beginPath();
   ctx.lineWidth = tit * 2;
   ctx.strokeStyle = DARKGRAY;
-  ctx.moveTo(xPadding + weight / 2, yPadding + weight / 2 + tit / 2);
+  ctx.moveTo(xPadding + weight / 2, yPadding + weight / 2);
   rad = Math.PI * 2 * (hour / 12 + minute / 60 / 12);
   ctx.lineTo(xPadding + (1 + Math.sin(rad) * 0.6) * weight / 2, yPadding + (1 -
     Math.cos(rad) * 0.6) * weight / 2);
@@ -105,14 +130,29 @@ function drawClock() {
   ctx.beginPath();
   ctx.lineWidth = tit * 1.5;
   ctx.strokeStyle = DARKGRAY;
-  ctx.moveTo(xPadding + weight / 2, yPadding + weight / 2 + tit / 2);
+  ctx.moveTo(xPadding + weight / 2, yPadding + weight / 2);
   rad = Math.PI * 2 * (minute / 60 + second / 60 / 60);
   ctx.lineTo(xPadding + (1 + Math.sin(rad) * 0.8) * weight / 2, yPadding + (1 -
     Math.cos(rad) * 0.8) * weight / 2);
   ctx.stroke();
 
+  if (showSecondBar) {
+    ctx.beginPath();
+    ctx.lineWidth = tit;
+    if (hour >= 12) {
+      ctx.strokeStyle = RED;
+    } else {
+      ctx.strokeStyle = BLUE;
+    }
+    ctx.moveTo(xPadding + weight / 2, yPadding + weight / 2);
+    rad = Math.PI * 2 * (second / 60);
+    ctx.lineTo(xPadding + (1 + Math.sin(rad) * 0.82) * weight / 2, yPadding + (1 -
+      Math.cos(rad) * 0.82) * weight / 2);
+    ctx.stroke();
+  }
+
   ctx.beginPath();
-  ctx.fillStyle = DARKGRAY;
+  ctx.fillStyle = DEEPDARKGRAY;
   rad = Math.PI * 2 * (i / 12);
   ctx.arc(xPadding + weight / 2,
     yPadding + weight / 2,

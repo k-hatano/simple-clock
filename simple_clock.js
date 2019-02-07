@@ -98,11 +98,7 @@ function drawClock() {
   if (showSecondBar) {
     ctx.beginPath();
     ctx.lineWidth = tit;
-    if (hour < 12) {
-      ctx.strokeStyle = LIGHTGRAY;
-    } else {
-      ctx.strokeStyle = LIGHTGRAY;
-    }
+    ctx.strokeStyle = LIGHTGRAY;
     ctx.moveTo(xPadding + weight / 2, yPadding + weight / 2 + tit / 2);
     rad = Math.PI * 2 * (second / 60);
     ctx.lineTo(xPadding + (1 + Math.sin(rad) * 0.82) * weight / 2, yPadding + (1 -
@@ -139,7 +135,7 @@ function drawClock() {
   if (showSecondBar) {
     ctx.beginPath();
     ctx.lineWidth = tit;
-    if (hour >= 12) {
+    if (hour < 12) {
       ctx.strokeStyle = RED;
     } else {
       ctx.strokeStyle = BLUE;

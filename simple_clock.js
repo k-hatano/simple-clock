@@ -45,9 +45,13 @@ function drawClock() {
   var tit = weight / 128;
 
   var now = new Date();
+  var year = now.getYear() + 1900;
+  var month = now.getMonth() + 1;
+  var day = now.getDate();
   var hour = now.getHours();
   var minute = now.getMinutes();
   var second = now.getSeconds();
+  var datetime = "" + year + "/" + month + "/" + day + " " + hour + ":" + (minute < 10 ? "0" : "") + minute + ":" + (second < 10 ? "0" : "") + second;
   var rad, i;
 
   var ctx = canvas.getContext('2d');
@@ -154,4 +158,11 @@ function drawClock() {
     yPadding + weight / 2,
     tit * 2, 0, Math.PI * 2, false);
   ctx.fill();
+
+  if (width + 180 < height && showSecondBar) {
+    ctx.fillStyle = DEEPDARKGRAY;
+    ctx.font = "" + tit * 6 + "px sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText(datetime, width / 2, (height + weight) / 2 + 72);
+  }
 }

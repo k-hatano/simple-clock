@@ -100,9 +100,9 @@ function drawClock() {
     ctx.fillStyle = DEEPDARKGRAY;
     if (width + 200 > height) {
       if ((hour >= 0 && hour < 3) || (hour >= 9 && hour < 15) || (hour >= 21 && hour < 24)) {
-        y = (height + weight) * 1 / 8 + yPadding / 2 + tit * 6;
-      } else {
         y = (height + weight) * 3 / 8 + yPadding / 2 + tit * 6;
+      } else {
+        y = (height + weight) * 1 / 8 + yPadding / 2 + tit * 6;
       }
       ctx.fillStyle = THEMECOLOR[theme];
     }

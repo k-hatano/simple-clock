@@ -66,7 +66,20 @@ onresize = function() {
 };
 
 function clockClicked() {
-  showSecondBar = !showSecondBar;
+  var canvas = document.getElementById('main_clock');
+  var width = canvas.clientWidth;
+  var height = canvas.clientHeight;
+  var weight = Math.min(width, height);
+
+  var x = (event.offsetX - canvas.clientWidth / 2) / weight;
+  var y = (event.offsetY - canvas.clientHeight / 2) / weight;
+  var radius = Math.sqrt(x * x + y * y);
+  if (radius <= 0.48) {
+    showSecondBar = !showSecondBar;
+  } else {
+    theme = (theme + 1) % (THEMECOLOR.length);
+  }
+
   drawClock();
 }
 
@@ -87,7 +100,7 @@ function drawClock() {
   var hour = now.getHours();
   var minute = now.getMinutes();
   var second = now.getSeconds();
-  var dateString = "" + year + "/" + month + "/" + day;
+  var dateString = "" + month + "/" + day;
   var datetimeString = "" + year + "/" + month + "/" + day + " " + hour + ":" + (minute < 10 ? "0" : "") + minute + ":" + (second < 10 ? "0" : "") + second;
   var rad, i;
 

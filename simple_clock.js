@@ -15,6 +15,7 @@ var THEMECOLOR = [TANGERINE, OCEAN, ASH, OLIVE, VIOLET, SAKURA];
 var THEMECOLOR_LIGHT = [LIGHTTANGERINE, LIGHTOCEAN, LIGHTASH, LIGHTOLIVE, LIGHTVIOLET, LIGHTSAKURA];
 
 var LIGHTGRAY = 'rgb(192,192,192)';
+var GRAY = 'rgb(128,128,128)';
 var DARKGRAY = 'rgb(64,64,64)';
 var DEEPDARKGRAY = 'rgb(32,32,32)';
 var RED = 'rgb(255,0,0)';
@@ -66,7 +67,6 @@ onresize = function() {
 
 function clockClicked() {
   showSecondBar = !showSecondBar;
-  showDigitalClock = showSecondBar;
   drawClock();
 }
 
@@ -93,6 +93,27 @@ function drawClock() {
 
   var ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, width, height);
+
+  if (showDigitalClock > 0) {
+    var x = width / 2
+    var y = (height + weight) / 2 + 72
+    ctx.fillStyle = DEEPDARKGRAY;
+    if (width + 200 > height) {
+      if ((hour >= 0 && hour < 3) || (hour >= 9 && hour < 15) || (hour >= 21 && hour < 24)) {
+        y = (height + weight) * 1 / 8 + yPadding / 2 + tit * 6;
+      } else {
+        y = (height + weight) * 3 / 8 + yPadding / 2 + tit * 6;
+      }
+      ctx.fillStyle = THEMECOLOR[theme];
+    }
+    ctx.font = "" + tit * 6 + "px sans-serif";
+    ctx.textAlign = "center";
+    if (showDigitalClock == 1) {
+      ctx.fillText(dateString, x, y);
+    } else if (showDigitalClock == 2) {
+      ctx.fillText(datetimeString, x, y);
+    }
+  }
 
   for (i = 0; i < 12; i++) {
     ctx.beginPath();
@@ -121,7 +142,7 @@ function drawClock() {
   ctx.beginPath();
   ctx.lineWidth = tit * 2;
   ctx.strokeStyle = LIGHTGRAY;
-  ctx.moveTo(xPadding + weight / 2, yPadding + weight / 2 + tit / 2);
+  ctx.moveTo(xPadding + weight / 2, yPadding + weight / 2 + tit);
   rad = Math.PI * 2 * (hour / 12 + minute / 60 / 12);
   ctx.lineTo(xPadding + (1 + Math.sin(rad) * 0.6) * weight / 2, yPadding + (1 -
     Math.cos(rad) * 0.6) * weight / 2 + tit);
@@ -130,7 +151,7 @@ function drawClock() {
   ctx.beginPath();
   ctx.lineWidth = tit * 1.5;
   ctx.strokeStyle = LIGHTGRAY;
-  ctx.moveTo(xPadding + weight / 2, yPadding + weight / 2 + tit / 2);
+  ctx.moveTo(xPadding + weight / 2, yPadding + weight / 2 + tit);
   rad = Math.PI * 2 * (minute / 60 + second / 60 / 60);
   ctx.lineTo(xPadding + (1 + Math.sin(rad) * 0.8) * weight / 2, yPadding + (1 -
     Math.cos(rad) * 0.8) * weight / 2 + tit);
@@ -140,7 +161,7 @@ function drawClock() {
     ctx.beginPath();
     ctx.lineWidth = tit;
     ctx.strokeStyle = LIGHTGRAY;
-    ctx.moveTo(xPadding + weight / 2, yPadding + weight / 2 + tit / 2);
+    ctx.moveTo(xPadding + weight / 2, yPadding + weight / 2 + tit);
     rad = Math.PI * 2 * (second / 60);
     ctx.lineTo(xPadding + (1 + Math.sin(rad) * 0.82) * weight / 2, yPadding + (1 -
       Math.cos(rad) * 0.82) * weight / 2 + tit);
@@ -177,9 +198,9 @@ function drawClock() {
     ctx.beginPath();
     ctx.lineWidth = tit;
     if (hour < 12) {
-      ctx.strokeStyle = RED;
+      ctx.strokeStyle = THEMECOLOR[theme];
     } else {
-      ctx.strokeStyle = BLUE;
+      ctx.strokeStyle = GRAY;
     }
     ctx.moveTo(xPadding + weight / 2, yPadding + weight / 2);
     rad = Math.PI * 2 * (second / 60);
@@ -195,15 +216,4 @@ function drawClock() {
     yPadding + weight / 2,
     tit * 2, 0, Math.PI * 2, false);
   ctx.fill();
-
-  if (width + 180 < height && showDigitalClock > 0) {
-    ctx.fillStyle = DEEPDARKGRAY;
-    ctx.font = "" + tit * 6 + "px sans-serif";
-    ctx.textAlign = "center";
-    if (showDigitalClock == 1) {
-      ctx.fillText(dateString, width / 2, (height + weight) / 2 + 72);
-    } else if (showDigitalClock == 2) {
-      ctx.fillText(datetimeString, width / 2, (height + weight) / 2 + 72);
-    }
-  }
 }

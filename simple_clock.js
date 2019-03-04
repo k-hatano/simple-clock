@@ -4,6 +4,7 @@ var THEMES = [
     spot_color: 'rgb(255,224,160)',
     edge_color: 'rgb(255,192,64)',
     edge_shadow_color: 'rgb(192,192,192)',
+    secondhand_color: 'rgb(128,128,128)',
     minutehand_color: 'rgb(64,64,64)',
     centerspot_color: 'rgb(32,32,32)',
     is_dark: false
@@ -12,6 +13,7 @@ var THEMES = [
     spot_color: 'rgb(160,224,255)',
     edge_color: 'rgb(64,192,255)',
     edge_shadow_color: 'rgb(192,192,192)',
+    secondhand_color: 'rgb(128,128,128)',
     minutehand_color: 'rgb(64,64,64)',
     centerspot_color: 'rgb(32,32,32)',
     is_dark: false
@@ -20,6 +22,7 @@ var THEMES = [
     spot_color: 'rgb(192,192,192)',
     edge_color: 'rgb(128,128,128)',
     edge_shadow_color: 'rgb(192,192,192)',
+    secondhand_color: 'rgb(128,128,128)',
     minutehand_color: 'rgb(64,64,64)',
     centerspot_color: 'rgb(32,32,32)',
     is_dark: false
@@ -28,6 +31,7 @@ var THEMES = [
     spot_color: 'rgb(192,224,0)',
     edge_color: 'rgb(128,192,0)',
     edge_shadow_color: 'rgb(192,192,192)',
+    secondhand_color: 'rgb(128,128,128)',
     minutehand_color: 'rgb(64,64,64)',
     centerspot_color: 'rgb(32,32,32)',
     is_dark: false
@@ -36,6 +40,7 @@ var THEMES = [
     spot_color: 'rgb(224,192,224)',
     edge_color: 'rgb(192,128,192)',
     edge_shadow_color: 'rgb(192,192,192)',
+    secondhand_color: 'rgb(128,128,128)',
     minutehand_color: 'rgb(64,64,64)',
     centerspot_color: 'rgb(32,32,32)',
     is_dark: false
@@ -44,6 +49,7 @@ var THEMES = [
     spot_color: 'rgb(255,192,224)',
     edge_color: 'rgb(255,128,192)',
     edge_shadow_color: 'rgb(192,192,192)',
+    secondhand_color: 'rgb(128,128,128)',
     minutehand_color: 'rgb(64,64,64)',
     centerspot_color: 'rgb(32,32,32)',
     is_dark: false
@@ -52,13 +58,12 @@ var THEMES = [
     spot_color: 'rgb(96,96,96)',
     edge_color: 'rgb(64,64,64)',
     edge_shadow_color: 'rgb(24,24,24)',
+    secondhand_color: 'rgb(80,80,80)',
     minutehand_color: 'rgb(96,96,96)',
     centerspot_color: 'rgb(32,32,32)',
     is_dark: true
   },
 ];
-
-var SECONDHAND_COLOR = 'rgb(128,128,128)';
 
 var WHITE = 'rgb(255,255,255)';
 var BLACK = 'rgb(0,0,0)';
@@ -235,7 +240,7 @@ function drawClock() {
 
   if (showSecondBar) {
     ctx.beginPath();
-    ctx.lineWidth = tit * 0.8;
+    ctx.lineWidth = tit;
     ctx.strokeStyle = THEMES[theme].edge_shadow_color;
     ctx.moveTo(xPadding + weight / 2, yPadding + weight / 2 + tit);
     rad = Math.PI * 2 * (second / 60);
@@ -272,11 +277,11 @@ function drawClock() {
 
   if (showSecondBar) {
     ctx.beginPath();
-    ctx.lineWidth = tit * 0.8;
+    ctx.lineWidth = tit;
     if (hour < 12) {
       ctx.strokeStyle = THEMES[theme].edge_color;
     } else {
-      ctx.strokeStyle = THEMES[theme].minutehand_color;
+      ctx.strokeStyle = THEMES[theme].secondhand_color;
     }
     ctx.moveTo(xPadding + weight / 2, yPadding + weight / 2);
     rad = Math.PI * 2 * (second / 60);

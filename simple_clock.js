@@ -1,5 +1,59 @@
 
+var Color = function() {
+  this.red = 0;
+  this.green = 0;
+  this.blue = 0;
+
+  return this;
+}
+
+Color.prototype.setRGB = function(red, green, blue) {
+  this.red = red;
+  this.green = green;
+  this.blue = blue;
+
+  return this;
+}
+
+Color.prototype.setFronHSV = function(hue, saturation, lightness) {
+  var C = lightness * saturation;
+  var H = hue / 60;
+  var X = C * (1 - Math.abs(H % 2 - 1));
+
+  var red, green, blue;
+  if (0 <= H && H < 1) [red, green, blue] = [C, X, 0];
+  if (1 <= H && H < 2) [red, green, blue] = [X, C, 0];
+  if (2 <= H && H < 3) [red, green, blue] = [0, C, X];
+  if (3 <= H && H < 4) [red, green, blue] = [0, X, C];
+  if (4 <= H && H < 5) [red, green, blue] = [X, 0, C];
+  if (5 <= H && H < 6) [red, green, blue] = [C, 0, X];
+
+  var m = lightness - C;
+  [red, green, blue] = [red + m, green + m, blue + m];
+
+  this.red = Math.floor(red * 255);
+  this.green = Math.floor(green * 255);
+  this.blue = Math.floor(blue * 255);
+
+  return this;
+}
+
+Color.prototype.toRGBString = function() {
+  return 'rgb(' + this.red + ',' + this.green + ',' + this.blue + ')';
+}
+
+
 var THEMES = [
+  { // rainbow
+    spot_color: 'rgb(192,192,192)',
+    edge_color: 'rgb(128,128,128)',
+    edge_shadow_color: 'rgb(192,192,192)',
+    secondhand_color: 'rgb(128,128,128)',
+    minutehand_color: 'rgb(64,64,64)',
+    centerspot_color: 'rgb(32,32,32)',
+    is_dark: false,
+    is_rainbow: true
+  },
   { // tangerine
     spot_color: 'rgb(255,224,160)',
     edge_color: 'rgb(255,192,64)',
@@ -7,7 +61,8 @@ var THEMES = [
     secondhand_color: 'rgb(128,128,128)',
     minutehand_color: 'rgb(64,64,64)',
     centerspot_color: 'rgb(32,32,32)',
-    is_dark: false
+    is_dark: false,
+    is_rainbow: false
   },
   { // ocean
     spot_color: 'rgb(160,224,255)',
@@ -16,7 +71,8 @@ var THEMES = [
     secondhand_color: 'rgb(128,128,128)',
     minutehand_color: 'rgb(64,64,64)',
     centerspot_color: 'rgb(32,32,32)',
-    is_dark: false
+    is_dark: false,
+    is_rainbow: false
   },
   { // ash
     spot_color: 'rgb(192,192,192)',
@@ -25,7 +81,8 @@ var THEMES = [
     secondhand_color: 'rgb(128,128,128)',
     minutehand_color: 'rgb(64,64,64)',
     centerspot_color: 'rgb(32,32,32)',
-    is_dark: false
+    is_dark: false,
+    is_rainbow: false
   },
   { // olive
     spot_color: 'rgb(192,224,0)',
@@ -34,7 +91,8 @@ var THEMES = [
     secondhand_color: 'rgb(128,128,128)',
     minutehand_color: 'rgb(64,64,64)',
     centerspot_color: 'rgb(32,32,32)',
-    is_dark: false
+    is_dark: false,
+    is_rainbow: false
   },
   { // amethyst
     spot_color: 'rgb(224,192,224)',
@@ -43,7 +101,8 @@ var THEMES = [
     secondhand_color: 'rgb(128,128,128)',
     minutehand_color: 'rgb(64,64,64)',
     centerspot_color: 'rgb(32,32,32)',
-    is_dark: false
+    is_dark: false,
+    is_rainbow: false
   },
   { // sakura
     spot_color: 'rgb(255,192,224)',
@@ -52,7 +111,8 @@ var THEMES = [
     secondhand_color: 'rgb(128,128,128)',
     minutehand_color: 'rgb(64,64,64)',
     centerspot_color: 'rgb(32,32,32)',
-    is_dark: false
+    is_dark: false,
+    is_rainbow: false
   },
   { // midnight
     spot_color: 'rgb(96,96,96)',
@@ -61,7 +121,8 @@ var THEMES = [
     secondhand_color: 'rgb(80,80,80)',
     minutehand_color: 'rgb(96,96,96)',
     centerspot_color: 'rgb(32,32,32)',
-    is_dark: true
+    is_dark: true,
+    is_rainbow: false
   },
   { // neon
     spot_color: 'rgb(0,128,128)',
@@ -70,7 +131,8 @@ var THEMES = [
     secondhand_color: 'rgb(0,96,96)',
     minutehand_color: 'rgb(0,128,128)',
     centerspot_color: 'rgb(32,32,32)',
-    is_dark: true
+    is_dark: true,
+    is_rainbow: false
   },
 ];
 
@@ -79,7 +141,7 @@ var BLACK = 'rgb(0,0,0)';
 
 var showSecondBar = 0;
 var showDigitalClock = 0;
-var theme = 0;
+var selectedTheme = 0;
 var baseWidth = 1.0;
 
 onload = function() {
@@ -151,9 +213,9 @@ function clockClicked() {
 }
 
 function switchColor() {
-  theme = (theme + 1) % (THEMES.length);
+  selectedTheme = (selectedTheme + 1) % (THEMES.length);
 
-  if (THEMES[theme].is_dark) {
+  if (THEMES[selectedTheme].is_dark) {
     document.bgColor = 'black';
   } else {
     document.bgColor = 'white';
@@ -181,30 +243,37 @@ function drawClock() {
   var datetimeString = "" + year + "/" + month + "/" + day + " " + hour + ":" + (minute < 10 ? "0" : "") + minute + ":" + (second < 10 ? "0" : "") + second;
   var rad, i;
 
+  var theme = THEMES[selectedTheme];
+
   var ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, width, height);
 
-  if (THEMES[theme].is_dark) {
+  if (theme.is_dark) {
     ctx.fillStyle = BLACK;
     ctx.fillRect(0, 0, width, height);
   }
 
   ctx.beginPath();
   ctx.lineWidth = tit * 2;
-  ctx.strokeStyle = THEMES[theme].edge_shadow_color;
+  ctx.strokeStyle = theme.edge_shadow_color;
   ctx.arc(xPadding + weight / 2, yPadding + weight / 2 + tit, weight * 0.96 / 2,
     0, Math.PI * 2, false);
   ctx.stroke();
 
   ctx.beginPath();
   ctx.lineWidth = tit * 2;
-  if (THEMES[theme].is_dark) {
-    ctx.strokeStyle = THEMES[theme].edge_color;
+  if (theme.is_dark) {
+    ctx.strokeStyle = theme.edge_color;
     ctx.arc(xPadding + weight / 2, yPadding + weight / 2, weight * 0.96 / 2, 0,
       Math.PI * 2, false);
     ctx.stroke();
   } else {
-    ctx.strokeStyle = THEMES[theme].edge_color;
+    ctx.strokeStyle = theme.edge_color;
+    if (theme.is_rainbow) {
+      var color = new Color();
+      color.setFronHSV(hour / 24 * 360, 0.67, 0.67);
+      ctx.strokeStyle = color.toRGBString();
+    }
     ctx.arc(xPadding + weight / 2, yPadding + weight / 2, weight * 0.96 / 2, 0,
       Math.PI * 2, false);
     ctx.stroke();
@@ -212,7 +281,12 @@ function drawClock() {
 
   for (i = 0; i < 12; i++) {
     ctx.beginPath();
-    ctx.fillStyle = THEMES[theme].spot_color;
+    ctx.fillStyle = theme.spot_color;
+    if (theme.is_rainbow) {
+      var color = new Color();
+      color.setFronHSV(hour / 24 * 360, 0.4, 1);
+      ctx.fillStyle = color.toRGBString();
+    }
     rad = Math.PI * 2 * (i / 12);
     ctx.arc(xPadding + (1 + Math.sin(rad) * (0.95 - baseWidth / 20)) * weight / 2,
       yPadding + (1 - Math.cos(rad) * (0.95 - baseWidth / 20)) * weight / 2,
@@ -230,7 +304,12 @@ function drawClock() {
         y = (height + weight) * 1 / 8 + yPadding / 2 + tit * 6;
       }
     }
-    ctx.fillStyle = THEMES[theme].edge_color;
+    ctx.fillStyle = theme.edge_color;
+    if (theme.is_rainbow) {
+      var color = new Color();
+      color.setFronHSV(hour / 24 * 360, 0.67, 0.67);
+      ctx.fillStyle = color.toRGBString();
+    }
     ctx.font = "" + tit * 6 + "px sans-serif";
     ctx.textAlign = "center";
     if (showDigitalClock == 1) {
@@ -242,7 +321,7 @@ function drawClock() {
   
   ctx.beginPath();
   ctx.lineWidth = tit * 2;
-  ctx.strokeStyle = THEMES[theme].edge_shadow_color;
+  ctx.strokeStyle = theme.edge_shadow_color;
   ctx.moveTo(xPadding + weight / 2, yPadding + weight / 2 + tit);
   rad = Math.PI * 2 * (hour / 12 + minute / 60 / 12);
   ctx.lineTo(xPadding + (1 + Math.sin(rad) * 0.6) * weight / 2, yPadding + (1 -
@@ -251,7 +330,7 @@ function drawClock() {
 
   ctx.beginPath();
   ctx.lineWidth = tit * 1.5;
-  ctx.strokeStyle = THEMES[theme].edge_shadow_color;
+  ctx.strokeStyle = theme.edge_shadow_color;
   ctx.moveTo(xPadding + weight / 2, yPadding + weight / 2 + tit);
   rad = Math.PI * 2 * (minute / 60 + second / 60 / 60);
   ctx.lineTo(xPadding + (1 + Math.sin(rad) * 0.8) * weight / 2, yPadding + (1 -
@@ -261,7 +340,7 @@ function drawClock() {
   if (showSecondBar) {
     ctx.beginPath();
     ctx.lineWidth = tit;
-    ctx.strokeStyle = THEMES[theme].edge_shadow_color;
+    ctx.strokeStyle = theme.edge_shadow_color;
     ctx.moveTo(xPadding + weight / 2, yPadding + weight / 2 + tit);
     rad = Math.PI * 2 * (second / 60);
     ctx.lineTo(xPadding + (1 + Math.sin(rad) * 0.82) * weight / 2, yPadding + (1 -
@@ -270,7 +349,7 @@ function drawClock() {
   }
 
   ctx.beginPath();
-  ctx.fillStyle = THEMES[theme].edge_shadow_color;
+  ctx.fillStyle = theme.edge_shadow_color;
   rad = Math.PI * 2 * (i / 12);
   ctx.arc(xPadding + weight / 2,
     yPadding + weight / 2 + tit,
@@ -279,7 +358,7 @@ function drawClock() {
 
   ctx.beginPath();
   ctx.lineWidth = tit * 2;
-  ctx.strokeStyle = THEMES[theme].minutehand_color;
+  ctx.strokeStyle = theme.minutehand_color;
   ctx.moveTo(xPadding + weight / 2, yPadding + weight / 2);
   rad = Math.PI * 2 * (hour / 12 + minute / 60 / 12);
   ctx.lineTo(xPadding + (1 + Math.sin(rad) * 0.6) * weight / 2, yPadding + (1 -
@@ -288,7 +367,7 @@ function drawClock() {
 
   ctx.beginPath();
   ctx.lineWidth = tit * 1.5;
-  ctx.strokeStyle = THEMES[theme].minutehand_color;
+  ctx.strokeStyle = theme.minutehand_color;
   ctx.moveTo(xPadding + weight / 2, yPadding + weight / 2);
   rad = Math.PI * 2 * (minute / 60 + second / 60 / 60);
   ctx.lineTo(xPadding + (1 + Math.sin(rad) * 0.8) * weight / 2, yPadding + (1 -
@@ -299,9 +378,14 @@ function drawClock() {
     ctx.beginPath();
     ctx.lineWidth = tit;
     if (hour < 12) {
-      ctx.strokeStyle = THEMES[theme].edge_color;
+      ctx.strokeStyle = theme.edge_color;
+      if (theme.is_rainbow) {
+        var color = new Color();
+        color.setFronHSV(hour / 24 * 360, 0.67, 0.67);
+        ctx.strokeStyle = color.toRGBString();
+      }
     } else {
-      ctx.strokeStyle = THEMES[theme].secondhand_color;
+      ctx.strokeStyle = theme.secondhand_color;
     }
     ctx.moveTo(xPadding + weight / 2, yPadding + weight / 2);
     rad = Math.PI * 2 * (second / 60);
@@ -311,7 +395,7 @@ function drawClock() {
   }
 
   ctx.beginPath();
-  ctx.fillStyle = THEMES[theme].centerspot_color;
+  ctx.fillStyle = theme.centerspot_color;
   rad = Math.PI * 2 * (i / 12);
   ctx.arc(xPadding + weight / 2,
     yPadding + weight / 2,

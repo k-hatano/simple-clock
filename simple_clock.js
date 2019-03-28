@@ -21,15 +21,41 @@ Color.prototype.setFronHSV = function(hue, saturation, lightness) {
   var X = C * (1 - Math.abs(H % 2 - 1));
 
   var red, green, blue;
-  if (0 <= H && H < 1) [red, green, blue] = [C, X, 0];
-  if (1 <= H && H < 2) [red, green, blue] = [X, C, 0];
-  if (2 <= H && H < 3) [red, green, blue] = [0, C, X];
-  if (3 <= H && H < 4) [red, green, blue] = [0, X, C];
-  if (4 <= H && H < 5) [red, green, blue] = [X, 0, C];
-  if (5 <= H && H < 6) [red, green, blue] = [C, 0, X];
+  if (0 <= H && H < 1) {
+    red = C;
+    green = X;
+    blue = 0;
+  } 
+  if (1 <= H && H < 2) {
+    red = X;
+    green = C;
+    blue = 0;
+  } 
+  if (2 <= H && H < 3) {
+    red = 0;
+    green = C;
+    blue = X;
+  } 
+  if (3 <= H && H < 4) {
+    red = 0;
+    green = X;
+    blue = C;
+  } 
+  if (4 <= H && H < 5) {
+    red = X;
+    green = 0;
+    blue = C;
+  } 
+  if (5 <= H && H < 6) {
+    red = C;
+    green = 0;
+    blue = X;
+  } 
 
   var m = lightness - C;
-  [red, green, blue] = [red + m, green + m, blue + m];
+  red = red + m;
+  green = green + m;
+  blue = blue + m;
 
   this.red = Math.floor(red * 255);
   this.green = Math.floor(green * 255);

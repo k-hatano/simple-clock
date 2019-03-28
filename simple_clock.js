@@ -36,7 +36,7 @@ var THEMES = [
     centerspot_color: 'rgb(32,32,32)',
     is_dark: false
   },
-  { // lavender
+  { // amethyst
     spot_color: 'rgb(224,192,224)',
     edge_color: 'rgb(192,128,192)',
     edge_shadow_color: 'rgb(192,192,192)',
@@ -63,6 +63,15 @@ var THEMES = [
     centerspot_color: 'rgb(32,32,32)',
     is_dark: true
   },
+  { // neon
+    spot_color: 'rgb(0,128,128)',
+    edge_color: 'rgb(0,96,96)',
+    edge_shadow_color: 'rgb(0,48,48)',
+    secondhand_color: 'rgb(0,96,96)',
+    minutehand_color: 'rgb(0,128,128)',
+    centerspot_color: 'rgb(32,32,32)',
+    is_dark: true
+  },
 ];
 
 var WHITE = 'rgb(255,255,255)';
@@ -71,6 +80,7 @@ var BLACK = 'rgb(0,0,0)';
 var showSecondBar = 0;
 var showDigitalClock = 0;
 var theme = 0;
+var baseWidth = 1.0;
 
 onload = function() {
   heartbeat();
@@ -88,6 +98,16 @@ onkeypress = function(e) {
       break;
     case 'd':
       showDigitalClock = (showDigitalClock + 1) % 3;
+      drawClock();
+      break;
+    case 'b':
+      baseWidth += 0.1;
+      if (baseWidth >= 2) baseWidth = 2;
+      drawClock();
+      break;
+    case 't':
+      baseWidth -= 0.1;
+      if (baseWidth <= 0.1) baseWidth = 0.1;
       drawClock();
       break;
     default:
@@ -148,7 +168,7 @@ function drawClock() {
   var weight = Math.min(width, height);
   var xPadding = (width - weight) / 2;
   var yPadding = (height - weight) / 2;
-  var tit = weight / 128;
+  var tit = weight / 128 * baseWidth;
 
   var now = new Date();
   var year = now.getYear() + 1900;
@@ -194,8 +214,8 @@ function drawClock() {
     ctx.beginPath();
     ctx.fillStyle = THEMES[theme].spot_color;
     rad = Math.PI * 2 * (i / 12);
-    ctx.arc(xPadding + (1 + Math.sin(rad) * 0.9) * weight / 2,
-      yPadding + (1 - Math.cos(rad) * 0.9) * weight / 2,
+    ctx.arc(xPadding + (1 + Math.sin(rad) * (0.95 - baseWidth / 20)) * weight / 2,
+      yPadding + (1 - Math.cos(rad) * (0.95 - baseWidth / 20)) * weight / 2,
       tit, 0, Math.PI * 2, false);
     ctx.fill();
   }

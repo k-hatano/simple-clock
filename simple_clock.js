@@ -15,7 +15,7 @@ Color.prototype.setRGB = function(red, green, blue) {
   return this;
 }
 
-Color.prototype.setFronHSV = function(hue, saturation, lightness) {
+Color.prototype.setFromHSV = function(hue, saturation, lightness) {
   var C = lightness * saturation;
   var H = hue / 60;
   var X = C * (1 - Math.abs(H % 2 - 1));
@@ -297,7 +297,7 @@ function drawClock() {
     ctx.strokeStyle = theme.edge_color;
     if (theme.is_rainbow) {
       var color = new Color();
-      color.setFronHSV(hour / 24 * 360, 0.67, 0.67);
+      color.setFromHSV((hour * 60 + minute) / 24 / 60 * 360, 0.67, 0.67);
       ctx.strokeStyle = color.toRGBString();
     }
     ctx.arc(xPadding + weight / 2, yPadding + weight / 2, weight * 0.96 / 2, 0,
@@ -310,7 +310,7 @@ function drawClock() {
     ctx.fillStyle = theme.spot_color;
     if (theme.is_rainbow) {
       var color = new Color();
-      color.setFronHSV(hour / 24 * 360, 0.4, 1);
+      color.setFromHSV((hour * 60 + minute) / 24 / 60 * 360, 0.4, 1);
       ctx.fillStyle = color.toRGBString();
     }
     rad = Math.PI * 2 * (i / 12);
@@ -333,7 +333,7 @@ function drawClock() {
     ctx.fillStyle = theme.edge_color;
     if (theme.is_rainbow) {
       var color = new Color();
-      color.setFronHSV(hour / 24 * 360, 0.67, 0.67);
+      color.setFromHSV((hour * 60 + minute) / 24 / 60 * 360, 0.67, 0.67);
       ctx.fillStyle = color.toRGBString();
     }
     ctx.font = "" + tit * 6 + "px sans-serif";
@@ -407,7 +407,7 @@ function drawClock() {
       ctx.strokeStyle = theme.edge_color;
       if (theme.is_rainbow) {
         var color = new Color();
-        color.setFronHSV(hour / 24 * 360, 0.67, 0.67);
+        color.setFromHSV((hour * 60 + minute) / 24 / 60 * 360, 0.67, 0.67);
         ctx.strokeStyle = color.toRGBString();
       }
     } else {

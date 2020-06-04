@@ -17,7 +17,7 @@ Color.prototype.setRGB = function(red, green, blue) {
 
 Color.prototype.setFromHSV = function(hue, saturation, lightness) {
   var C = lightness * saturation;
-  var H = hue / 60;
+  var H = (hue % 360) / 60;
   var X = C * (1 - Math.abs(H % 2 - 1));
 
   var red, green, blue;
@@ -70,17 +70,32 @@ Color.prototype.toRGBString = function() {
 
 
 var THEMES = [
-  { // rainbow
+  { // rainbow 1
+    name: 'rainbow 1',
     spot_color: 'rgb(192,192,192)',
     edge_color: 'rgb(128,128,128)',
     edge_shadow_color: 'rgb(192,192,192)',
     secondhand_color: 'rgb(128,128,128)',
     minutehand_color: 'rgb(64,64,64)',
     centerspot_color: 'rgb(32,32,32)',
+    rainbow_shift: 0,
+    is_dark: false,
+    is_rainbow: true
+  },
+  { // rainbow 2
+    name: 'rainbow 2',
+    spot_color: 'rgb(192,192,192)',
+    edge_color: 'rgb(128,128,128)',
+    edge_shadow_color: 'rgb(192,192,192)',
+    secondhand_color: 'rgb(128,128,128)',
+    minutehand_color: 'rgb(64,64,64)',
+    centerspot_color: 'rgb(32,32,32)',
+    rainbow_shift: 180,
     is_dark: false,
     is_rainbow: true
   },
   { // tangerine
+    name: 'tangerine',
     spot_color: 'rgb(255,224,160)',
     edge_color: 'rgb(255,192,64)',
     edge_shadow_color: 'rgb(192,192,192)',
@@ -91,6 +106,7 @@ var THEMES = [
     is_rainbow: false
   },
   { // ocean
+    name: 'ocean',
     spot_color: 'rgb(160,224,255)',
     edge_color: 'rgb(64,192,255)',
     edge_shadow_color: 'rgb(192,192,192)',
@@ -101,6 +117,7 @@ var THEMES = [
     is_rainbow: false
   },
   { // ash
+    name: 'ash',
     spot_color: 'rgb(192,192,192)',
     edge_color: 'rgb(128,128,128)',
     edge_shadow_color: 'rgb(192,192,192)',
@@ -111,6 +128,7 @@ var THEMES = [
     is_rainbow: false
   },
   { // olive
+    name: 'olive',
     spot_color: 'rgb(192,224,0)',
     edge_color: 'rgb(128,192,0)',
     edge_shadow_color: 'rgb(192,192,192)',
@@ -121,6 +139,7 @@ var THEMES = [
     is_rainbow: false
   },
   { // amethyst
+    name: 'amethyst',
     spot_color: 'rgb(224,192,224)',
     edge_color: 'rgb(192,128,192)',
     edge_shadow_color: 'rgb(192,192,192)',
@@ -131,6 +150,7 @@ var THEMES = [
     is_rainbow: false
   },
   { // sakura
+    name: 'sakura',
     spot_color: 'rgb(255,192,224)',
     edge_color: 'rgb(255,128,192)',
     edge_shadow_color: 'rgb(192,192,192)',
@@ -141,6 +161,7 @@ var THEMES = [
     is_rainbow: false
   },
   { // midnight
+    name: 'midnight',
     spot_color: 'rgb(96,96,96)',
     edge_color: 'rgb(64,64,64)',
     edge_shadow_color: 'rgb(24,24,24)',
@@ -151,6 +172,7 @@ var THEMES = [
     is_rainbow: false
   },
   { // neon
+    name: 'neon',
     spot_color: 'rgb(0,128,128)',
     edge_color: 'rgb(0,96,96)',
     edge_shadow_color: 'rgb(0,48,48)',
@@ -297,7 +319,7 @@ function drawClock() {
     ctx.strokeStyle = theme.edge_color;
     if (theme.is_rainbow) {
       var color = new Color();
-      color.setFromHSV((hour * 60 + minute) / 24 / 60 * 360, 0.67, 0.67);
+      color.setFromHSV((hour * 60 + minute) / 24 / 60 * 360 + theme.rainbow_shift, 0.67, 0.67);
       ctx.strokeStyle = color.toRGBString();
     }
     ctx.arc(xPadding + weight / 2, yPadding + weight / 2, weight * 0.96 / 2, 0,
@@ -310,7 +332,7 @@ function drawClock() {
     ctx.fillStyle = theme.spot_color;
     if (theme.is_rainbow) {
       var color = new Color();
-      color.setFromHSV((hour * 60 + minute) / 24 / 60 * 360, 0.4, 1);
+      color.setFromHSV((hour * 60 + minute) / 24 / 60 * 360 + theme.rainbow_shift, 0.4, 1);
       ctx.fillStyle = color.toRGBString();
     }
     rad = Math.PI * 2 * (i / 12);
@@ -333,7 +355,7 @@ function drawClock() {
     ctx.fillStyle = theme.edge_color;
     if (theme.is_rainbow) {
       var color = new Color();
-      color.setFromHSV((hour * 60 + minute) / 24 / 60 * 360, 0.67, 0.67);
+      color.setFromHSV((hour * 60 + minute) / 24 / 60 * 360 + theme.rainbow_shift, 0.67, 0.67);
       ctx.fillStyle = color.toRGBString();
     }
     ctx.font = "" + tit * 6 + "px sans-serif";
@@ -407,11 +429,16 @@ function drawClock() {
       ctx.strokeStyle = theme.edge_color;
       if (theme.is_rainbow) {
         var color = new Color();
-        color.setFromHSV((hour * 60 + minute) / 24 / 60 * 360, 0.67, 0.67);
+        color.setFromHSV((hour * 60 + minute) / 24 / 60 * 360 + theme.rainbow_shift, 0.67, 0.9);
         ctx.strokeStyle = color.toRGBString();
       }
     } else {
       ctx.strokeStyle = theme.secondhand_color;
+      if (theme.is_rainbow) {
+        var color = new Color();
+        color.setFromHSV((hour * 60 + minute) / 24 / 60 * 360 + theme.rainbow_shift, 0.67, 0.5);
+        ctx.strokeStyle = color.toRGBString();
+      }
     }
     ctx.moveTo(xPadding + weight / 2, yPadding + weight / 2);
     rad = Math.PI * 2 * (second / 60);
